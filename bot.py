@@ -1,9 +1,9 @@
 # bot.py
 import os
-
 import discord
 import random
 from dotenv import load_dotenv
+
 
 load_dotenv() # Carichiamo le variabili del file .env
 TOKEN = os.getenv('DISCORD_TOKEN')
