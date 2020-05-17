@@ -1,2 +1,2 @@
 # NDD-Bot
-NDD Bot - Nulla Di Decente Bot
+NDD Bot - Niente Di Decente Bot
