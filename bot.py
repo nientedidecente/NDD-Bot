@@ -20,7 +20,7 @@ async def on_ready():  # When the bot is connected to Discord do:
 
 @client.command()
 async def ping(ctx): # !ping command
-    await ctx.send(f'Pong! {round(client.latency * 1000)}ms')  # Send the latency of the bot
+    await ctx.send(f'Pong! :ping_pong: {round(client.latency * 1000)}ms')  # Send the latency of the bot
 
 @client.command()
 async def say(ctx, *, arg): # !say command
