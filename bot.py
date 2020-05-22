@@ -42,7 +42,7 @@ async def ping(ctx):
 # !ver command
 @client.command()
 async def ver(ctx):
-    await ctx.send(f'NDD Bot version: 0.0.4 alpha - LOCAL')
+    await ctx.send(f'NDD Bot version: 0.0.5 alpha')
 
 # !say command
 @client.command()
