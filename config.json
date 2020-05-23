@@ -2,5 +2,15 @@
 
     "chwelcome_msg":", su NDD Games, la community italiana di sviluppatori di giochi open source.\n1. Scrivi due righe su di te sul channel <#709745996938084433>.\n2. Leggi il <#710950825182101635>\n\nBuona permanenza!\n\nQuando puoi:\nChiedi accesso alla org github ad uno dei mod (https://github.com/nientedidecente)\nCompila il modulo in <#711220093631332443>",
     "chwelcome_id":"709733538181808172",
-    "chwelcome_name":"general"
+    "chwelcome_name":"general",
+
+    "random_status":[
+        {
+            "1":"1-",
+            "2":"2-",
+            "3":"3-",
+            "4":"4-",
+            "5":"5-"
+        }
+    ]
 }
