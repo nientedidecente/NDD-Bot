@@ -4,15 +4,6 @@
   "image": "heroku/python",
   "repository": "https://github.com/nientedidecente/NDD-Bot",
   "keywords": ["python", "discord" ],
-  "addons": [ "" ],
-"env": {
-    "DISCORD_TOKEN": {
-      "description": "The Discord Bot Token",
-      "value": "NzExMjgzODUzOTcyNjAyOTAx.XsFdNw.Pp_gti6aB8StUr4gEwVQc1jbgys"
-    },
-    "DISCORD_GUILD": {
-      "description": "A name of a discord guild",
-      "value": "NDD Games"
-    }
-  },
+  "addons": [ "" ]
+
 }
