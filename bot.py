@@ -39,7 +39,7 @@ def __init__(self, *args, **kwargs):
         self.bg_task = self.loop.create_task(self.my_background_task())
         print('dude im an def thing')'''
 
-
+ 
 '''@client.event
 async def on_ready():  # When the bot is connected to Discord do:
     print('Bot is ready')
