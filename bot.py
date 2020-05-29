@@ -38,7 +38,7 @@ client = commands.Bot(command_prefix='!')
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
     print('Bot is ready')
-    await client.change_presence(activity=discord.Game(name=f'Hello! Im the NDD Bot! ver.{bot_branch}|{bot_version}'))
+    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
 
 '''
 ------------------------------------------------
@@ -67,7 +67,7 @@ async def say(ctx, *, arg):
 async def play(ctx, *, arg): 
     if arg == "reset":
         await ctx.send('Ok! Setting my playing status to: `default`')
-        await client.change_presence(activity=discord.Game(name=f'Hello! Im the NDD Bot! ver.{bot_branch}|{bot_version}'))
+        await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
     else:
         await ctx.send(f'Ok! Im setting my playing status to: {arg}') # Send what the user just said
         await client.change_presence(activity=discord.Game(name=arg))
