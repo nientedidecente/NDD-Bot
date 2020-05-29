@@ -13,12 +13,18 @@ from discord.ext import commands
                 CONFIG VARIABLES
 ------------------------------------------------
 '''
+bot_branch = "ndd-specific"
+bot_version = "1.0"
+
+# ------------|  Join/Left event config variables  |-----
 
 welcome_dm = ", su NDD Games, la community italiana di sviluppatori di giochi open source.\n1. Scrivi due righe su di te sul channel <#709745996938084433>.\n2. Leggi il <#710950825182101635>\n\nBuona permanenza!\n\nQuando puoi:\nChiedi accesso alla org github ad uno dei mod (https://github.com/nientedidecente)\nCompila il modulo in <#711220093631332443>"
 
-welcome_chid = "709733538181808172"
+welcome_ch_id = "709733538181808172"
+welcome_ch_name = "general"
 
-
+join_msg = " \u00E8 entrato nel server! Dategli un caloroso benvenuto!"
+left_msg = " \u00E8 uscito dal server. **F**"
 
 
 
@@ -41,7 +47,7 @@ client = commands.Bot(command_prefix='!')
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
     print('Bot is ready')
-
+    await client.change_presence(activity=discord.Game(name=f'Hello! Im the NDD Bot! ver.{bot_branch}|{bot_version}'))
 
 '''
 ------------------------------------------------
@@ -58,7 +64,7 @@ async def ping(ctx):
 # !ver command
 @client.command()
 async def ver(ctx):
-    await ctx.send(f'NDD Bot version: ')
+    await ctx.send(f'NDD Bot version: branch {bot_branch} ver.{bot_version}')
 
 # !say command
 @client.command()
@@ -80,16 +86,16 @@ async def on_member_join(member): # when a user joins a guild do:
     print('on_member_join event triggered')
 
     for channel in member.guild.channels: #search the channel
-        print(f'- - - Searching the "{data["chwelcome_name"]}" channel...- - - ')
-        print(f'ID is <{data["chwelcome_id"]}>')
-        print(f'Is "{str(channel)}" id the same as "{data["chwelcome_name"]} id" ? {str(channel.id) == data["chwelcome_id"]}')
+        print(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
+        print(f'ID is <{welcome_ch_id}>')
+        print(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
 
-        if str(channel.id) == data["chwelcome_id"]: #compare channels id
-            print(f'{data["chwelcome_name"]} channel found.')
-            print(f'- - - Done. Sending to the channel "{data["chwelcome_name"]}" the welcome messagge- - - ')
+        if str(channel.id) == welcome_ch_id: #compare channels id
+            print(f'{welcome_ch_name} channel found.')
+            print(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
 
-            await channel.send(f'{member.mention}{data["chwelcome_msg"]}') # Send the "chwelcome_msg" object value to the channel
-            await member.send(f'Benvenut* {member.mention}{data["chwelcome_dm"]}') # Send the "chwelcome_dm" object value to the user
+            await channel.send(f'{member.mention}{join_msg}') # Send the "chwelcome_msg" object value to the channel
+            await member.send(f'Benvenut* {member.mention}{welcome_dm}') # Send the "chwelcome_dm" object value to the user
             return
 
 # ---- Member Leave event
@@ -99,19 +105,17 @@ async def on_member_remove(member): # when a user joins a guild do:
     print('on_member_remove event triggered')
 
     for channel in member.guild.channels: #search the channel
-        print(f'- - - Searching the "{data["chwelcome_name"]}" channel...- - - ')
-        print(f'Is "{str(channel)}" the same as "{data["chwelcome_name"]}" ? {str(channel) == data["chwelcome_name"]}')
+        print(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
+        print(f'ID is <{welcome_ch_id}>')
+        print(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
 
-        if str(channel) == data["chwelcome_name"]: #compare channels id
-            print(f'{data["chwelcome_name"]} channel found. Checking channel id...')
-            print(f'DISCORD {str(channel.id)}  < - - >  {data["chwelcome_id"]} CONFIG')
-            print(f'IDs are the same? {str(channel.id) == data["chwelcome_id"]}')
+        if str(channel.id) == welcome_ch_id: #compare channels id
+            print(f'{welcome_ch_name} channel found.')
+            print(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
 
-            if str(channel.id) == data["chwelcome_id"]:
-                print(f'- - - Done. Sending to the channel "{data["chwelcome_name"]}" the welcome messagge- - - ')
-                await channel.send(f'{member.mention}{data["chwelcome_left"]}')
-                #await member.send(f'Benvenut* {member.mention}{data["chwelcome_dm"]}')
-                return
+            await channel.send(f'{member.mention}{left_msg}') 
+            #await member.send(f'Benvenut* {member.mention}{welcome_dm}') # There is no DM left message
+            return
 
 
 
