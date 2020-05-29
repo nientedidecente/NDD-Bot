@@ -64,8 +64,11 @@ async def say(ctx, *, arg):
 # !play command
 @client.command()
 async def play(ctx, *, arg): 
-    await ctx.send(f'Ok! Im setting my playing status to: {arg}') # Send what the user just said
-    await client.change_presence(activity=discord.Game(name=arg))
+    if arg == "reset":
+        await ctx.send('Ok! Setting my playing status to: `default`')
+    else:
+        await ctx.send(f'Ok! Im setting my playing status to: {arg}') # Send what the user just said
+        await client.change_presence(activity=discord.Game(name=arg))
 
 
 
