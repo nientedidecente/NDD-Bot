@@ -2,7 +2,6 @@
 import os
 import discord
 import random
-import json
 import threading
 import asyncio
 from dotenv import load_dotenv
@@ -34,15 +33,6 @@ TOKEN = os.getenv('DISCORD_TOKEN') # get token
 GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
 client = commands.Bot(command_prefix='!')
 
-'''with open('config.json') as json_config:
-    #json_config = data.read().decode("utf-8")
-    
-    data = json.loads("json_config")
------
-    data = json.load(config)
-
-    random_status = data["random_status"]'''
-
 
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
@@ -70,6 +60,12 @@ async def ver(ctx):
 @client.command()
 async def say(ctx, *, arg): 
     await ctx.send(arg) # Send what the user just said
+
+# !play command
+@client.command()
+async def play(ctx, *, arg): 
+    await ctx.send(f'Ok! Im setting my playing status to: {arg}') # Send what the user just said
+    await client.change_presence(activity=discord.Game(name=arg))
 
 
 
