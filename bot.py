@@ -8,18 +8,31 @@ import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
 
+'''
+------------------------------------------------
+                CONFIG VARIABLES
+------------------------------------------------
+'''
+
+welcome_dm = ", su NDD Games, la community italiana di sviluppatori di giochi open source.\n1. Scrivi due righe su di te sul channel <#709745996938084433>.\n2. Leggi il <#710950825182101635>\n\nBuona permanenza!\n\nQuando puoi:\nChiedi accesso alla org github ad uno dei mod (https://github.com/nientedidecente)\nCompila il modulo in <#711220093631332443>"
+
+welcome_chid = "709733538181808172"
+
+
+
+
+
 
 load_dotenv() # Load the .env file
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-counter = 0
+TOKEN = os.getenv('DISCORD_TOKEN') # get token 
+GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
 client = commands.Bot(command_prefix='!')
 
-with open('config.json') as json_config:
+'''with open('config.json') as json_config:
     #json_config = data.read().decode("utf-8")
     
     data = json.loads("json_config")
-'''
+-----
     data = json.load(config)
 
     random_status = data["random_status"]'''
@@ -28,65 +41,13 @@ with open('config.json') as json_config:
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
     print('Bot is ready')
-    #print(data["random_status"])
-    #print(random_status["dude"])
 
-# -----Change bot activity after 10 seconds (Doesn't work for now)-----
-'''
-def __init__(self, *args, **kwargs):
-        super().__init__*args, **kwargs)
-        # create the background task and run it in the background
-        self.bg_task = self.loop.create_task(self.my_background_task())
-        print('dude im an def thing')'''
-
- 
-'''@client.event
-async def on_ready():  # When the bot is connected to Discord do:
-    print('Bot is ready')
-    counter = 0
-    await client.change_presence(activity=discord.Game(name='Hello'))
-    print('dude')
-    if True:
-        t = threading.Timer(5.0, my_background_task())
-        print('thhhhhherrrrffddfd')
-        t.start()
-
-def my_background_task():
-    print('fuck you dude')
----------------------------------
-    await client.wait_until_ready()
-    print('dude im background')
-    channel = client.get_channel(709854752195870762) # channel ID goes here
-    print('dude im in the ultime state')
-    counter += 1
-    await channel.send(counter)'''
 
 '''
 ------------------------------------------------
                 BOT COMMANDS
 ------------------------------------------------
 '''
-
-# DEBUG
-@client.command()
-async def debug(ctx):
-    await ctx.send(data["chwelcome_id"])
-    await ctx.send(data["chwelcome_name"])
-    await ctx.send(data["chwelcome_msg"])
-    await ctx.send(data["chwelcome_dm"])
-    await ctx.send(data["chwelcome_left"])
-    await ctx.send("Sending json data")
-    await ctx.send(data)
-    await ctx.send("Done.")
-    await ctx.send("Sending random_status data")
-    await ctx.send(data["random_status"])
-    await ctx.send("Done.")
-    await ctx.send("Sending random_status child data 'dude'")
-    for channel in data:
-
-        await ctx.send(channel['dude'])
-
-    await ctx.send("Done.")
 
 
 # !ping command
