@@ -28,12 +28,15 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    # !play command
+    # !reload command
     @commands.command()
     async def reload(self, ctx): 
         await ctx.send(':arrows_counterclockwise: Reloading config file...')
 
-        with open('config.json') as config:
+        # Dosen't work. 
+        '''with open('config.json') as config:
+            config.close()
             json_data = json.load(config)
         
-        await ctx.send(':white_check_mark: Config file reloaded')
+        await ctx.send(':white_check_mark: Config file reloaded')'''
+        await ctx.send('Sorry, command in WIP')

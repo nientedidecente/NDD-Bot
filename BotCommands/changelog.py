@@ -28,7 +28,7 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    # !play command
+    # !changelog command
     @commands.command()
     async def changelog(self, ctx): 
         await ctx.send(bot_version_info.format(bot_version, bot_branch))
