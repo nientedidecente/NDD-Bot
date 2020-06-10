@@ -30,5 +30,10 @@ class Basic(commands.Cog):
     
     # !play command
     @commands.command()
-    async def changelog(self, ctx): 
-        await ctx.send(bot_version_info.format(bot_version, bot_branch))
+    async def reload(self, ctx): 
+        await ctx.send(':arrows_counterclockwise: Reloading config file...')
+
+        with open('config.json') as config:
+            json_data = json.load(config)
+        
+        await ctx.send(':white_check_mark: Config file reloaded')

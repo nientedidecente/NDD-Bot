@@ -13,6 +13,7 @@ import BotCommands.ver
 import BotCommands.play
 import BotCommands.say
 import BotCommands.changelog
+import BotCommands.reload
 import BotCommands.__init__
 # In the future this huge list of "import BotCommands" wil be deleted
 
@@ -122,6 +123,7 @@ def loadCogsCommands():
     client.add_cog(BotCommands.say.Basic(client))
     client.add_cog(BotCommands.play.Basic(client))
     client.add_cog(BotCommands.changelog.Basic(client))
+    client.add_cog(BotCommands.reload.Basic(client))
 
 
 
