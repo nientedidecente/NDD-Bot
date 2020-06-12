@@ -2,43 +2,63 @@
 import os
 import discord
 import random
+import json
 import threading
 import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
+
+import BotCommands.ping
+import BotCommands.ver
+import BotCommands.play
+import BotCommands.say
+import BotCommands.changelog
+import BotCommands.reload
+import BotCommands.__init__
+# In the future this huge list of "import BotCommands" wil be deleted
+
+load_dotenv() # Load the .env file
+TOKEN = os.getenv('DISCORD_TOKEN') # get token 
+GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
+client = commands.Bot(command_prefix='!') #Command prefix
+
+#print (len([name for name in os.listdir('.') if os.path.isfile(name)]))
+
+with open('config.json') as config:
+    json_data = json.load(config)
+
 
 '''
 ------------------------------------------------
                 CONFIG VARIABLES
 ------------------------------------------------
 '''
-bot_branch = "ndd-specific"
-bot_version = "1.0"
-bot_defaultStatus = ""
+bot_branch = json_data["bot_branch"]
+bot_version = json_data["bot_version"]
+bot_version_dev = json_data["bot_version_dev"]
+bot_version_info = "none"#json_data["bot_version_info"]
 
 # ------------|  Join/Left event config variables  |-----
 
-welcome_dm = ", su NDD Games, la community italiana di sviluppatori di giochi open source.\n1. Scrivi due righe su di te sul channel <#709745996938084433>.\n2. Leggi il <#710950825182101635>\n\nBuona permanenza!\n\nQuando puoi:\nChiedi accesso alla org github ad uno dei mod (https://github.com/nientedidecente)\nCompila il modulo in <#711220093631332443>"
+welcome_dm = json_data["welcome_dm"]
 
-welcome_ch_id = "709733538181808172"
-welcome_ch_name = "general"
+welcome_ch_id = json_data["welcome_ch_id"]
+welcome_ch_name = json_data["welcome_ch_name"]
 
-join_msg = " \u00E8 entrato nel server! Dategli un caloroso benvenuto!"
-left_msg = " \u00E8 uscito dal server. **F**"
+join_msg = json_data["welcome_ch_msg"]
+left_msg = json_data["goodbye_ch_msg"]
+
+# ------------------------------------------------
 
 
-
-
-load_dotenv() # Load the .env file
-TOKEN = os.getenv('DISCORD_TOKEN') # get token 
-GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
-client = commands.Bot(command_prefix='!')
 
 
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
     print('Bot is ready')
     await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
+    loadCogsCommands(BotCommands) # Loads all the commands in a folder
+
 
 '''
 ------------------------------------------------
@@ -47,30 +67,32 @@ async def on_ready():  # When the bot is connected to Discord do:
 '''
 
 
-# !ping command
 @client.command()
-async def ping(ctx):
-    await ctx.send(f':ping_pong: Pong! {round(client.latency * 1000)}ms')  # Send the latency of the bot
+async def debug(ctx, *, arg):
 
-# !ver command
-@client.command()
-async def ver(ctx):
-    await ctx.send(f'NDD Bot version: branch {bot_branch} ver.{bot_version}')
-
-# !say command
-@client.command()
-async def say(ctx, *, arg): 
-    await ctx.send(arg) # Send what the user just said
-
-# !play command
-@client.command()
-async def play(ctx, *, arg): 
-    if arg == "reset":
-        await ctx.send('Ok! Setting my playing status to: `default`')
-        await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
+    if bot_version_dev == "True":
+        if arg == "y":
+            await ctx.send('-----Debug start-----')
+            await ctx.send('|')
+            await ctx.send(f'bot_branch:        `{bot_branch}`')
+            await ctx.send(f'bot_version:       `{bot_version}`')
+            await ctx.send(f'bot_version_dev:   `{bot_version_dev}`')
+            await ctx.send(f'bot_version_info:  `{bot_version_info}`')
+            await ctx.send(f'welcome_dm:        `{welcome_dm}`')
+            await ctx.send(f'welcome_ch_id:     `{welcome_ch_id}`')
+            await ctx.send(f'welcome_ch_name:   `{welcome_ch_name}`')
+            await ctx.send(f'welcome_ch_msg:    `{join_msg}`')
+            await ctx.send(f'goodbye_ch_msg:    `{left_msg}`')
+            await ctx.send(f'cake:              `{json_data["cake"]}`')
+            await ctx.send('|')
+            await ctx.send('-----Debug end-----')
     else:
-        await ctx.send(f'Ok! Im setting my playing status to: {arg}') # Send what the user just said
-        await client.change_presence(activity=discord.Game(name=arg))
+        await ctx.send('Bot is in stable version, no need for debuging')
+
+@debug.error
+async def debug_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('WARNING! The bot will spam all the variables, it could disturb people with notifications active.\nContinue? (!debug y)')
 
 
 
@@ -119,6 +141,14 @@ async def on_member_remove(member): # when a user joins a guild do:
             return
 
 
+
+def loadCogsCommands(_dir):
+    client.add_cog(_dir.ping.Basic(client))
+    client.add_cog(_dir.ver.Basic(client))
+    client.add_cog(_dir.say.Basic(client))
+    client.add_cog(_dir.play.Basic(client))
+    client.add_cog(_dir.changelog.Basic(client))
+    client.add_cog(_dir.reload.Basic(client))
 
 
 
