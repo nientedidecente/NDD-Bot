@@ -35,7 +35,8 @@ with open('config.json') as config:
 '''
 bot_branch = json_data["bot_branch"]
 bot_version = json_data["bot_version"]
-bot_version_info = json_data["bot_version_info"]
+bot_version_dev = json_data["bot_version_dev"]
+bot_version_info = "none"#json_data["bot_version_info"]
 
 # ------------|  Join/Left event config variables  |-----
 
@@ -66,8 +67,31 @@ async def on_ready():  # When the bot is connected to Discord do:
 '''
 
 
+@client.command()
+async def debug(ctx, *, arg):
 
+    if bot_version_dev == "True":
+        if arg == "y":
+            await ctx.send('-----Debug start-----')
+            await ctx.send('Json file:')
+            await ctx.send(f'bot_branch: {bot_branch}')
+            await ctx.send(f'bot_version: {bot_version}')
+            await ctx.send(f'bot_version_dev: {bot_version_dev}')
+            await ctx.send(f'bot_version_info: {bot_version_info}')
+            await ctx.send(f'welcome_dm: {welcome_dm}')
+            await ctx.send(f'welcome_ch_id: {welcome_ch_id}')
+            await ctx.send(f'welcome_ch_name: {welcome_ch_name}')
+            await ctx.send(f'welcome_ch_msg: {join_msg}')
+            await ctx.send(f'goodbye_ch_msg: {left_msg}')
+            await ctx.send(f'cake: {json_data["cake"]}')
+            await ctx.send('-----Debug end-----')
+    else:
+        await ctx.send('Bot is in stable version, no need for debuging')
 
+@debug.error
+async def debug_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('WARNING! The bot will spam all the variables, it could disturb people with notifications active.\nContinue? (!debug y)')
 
 
 
