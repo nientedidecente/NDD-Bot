@@ -57,7 +57,7 @@ left_msg = json_data["goodbye_ch_msg"]
 async def on_ready():  # When the bot is connected to Discord do:
     print('Bot is ready')
     await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
-    loadCogsCommands() # Loads all the commands in the folder "Commands"
+    loadCogsCommands(BotCommands) # Loads all the commands in a folder
 
 
 '''
@@ -73,17 +73,18 @@ async def debug(ctx, *, arg):
     if bot_version_dev == "True":
         if arg == "y":
             await ctx.send('-----Debug start-----')
-            await ctx.send('Json file:')
-            await ctx.send(f'bot_branch: {bot_branch}')
-            await ctx.send(f'bot_version: {bot_version}')
-            await ctx.send(f'bot_version_dev: {bot_version_dev}')
-            await ctx.send(f'bot_version_info: {bot_version_info}')
-            await ctx.send(f'welcome_dm: {welcome_dm}')
-            await ctx.send(f'welcome_ch_id: {welcome_ch_id}')
-            await ctx.send(f'welcome_ch_name: {welcome_ch_name}')
-            await ctx.send(f'welcome_ch_msg: {join_msg}')
-            await ctx.send(f'goodbye_ch_msg: {left_msg}')
-            await ctx.send(f'cake: {json_data["cake"]}')
+            await ctx.send('|')
+            await ctx.send(f'bot_branch:        `{bot_branch}`')
+            await ctx.send(f'bot_version:       `{bot_version}`')
+            await ctx.send(f'bot_version_dev:   `{bot_version_dev}`')
+            await ctx.send(f'bot_version_info:  `{bot_version_info}`')
+            await ctx.send(f'welcome_dm:        `{welcome_dm}`')
+            await ctx.send(f'welcome_ch_id:     `{welcome_ch_id}`')
+            await ctx.send(f'welcome_ch_name:   `{welcome_ch_name}`')
+            await ctx.send(f'welcome_ch_msg:    `{join_msg}`')
+            await ctx.send(f'goodbye_ch_msg:    `{left_msg}`')
+            await ctx.send(f'cake:              `{json_data["cake"]}`')
+            await ctx.send('|')
             await ctx.send('-----Debug end-----')
     else:
         await ctx.send('Bot is in stable version, no need for debuging')
@@ -141,13 +142,13 @@ async def on_member_remove(member): # when a user joins a guild do:
 
 
 
-def loadCogsCommands():
-    client.add_cog(BotCommands.ping.Basic(client))
-    client.add_cog(BotCommands.ver.Basic(client))
-    client.add_cog(BotCommands.say.Basic(client))
-    client.add_cog(BotCommands.play.Basic(client))
-    client.add_cog(BotCommands.changelog.Basic(client))
-    client.add_cog(BotCommands.reload.Basic(client))
+def loadCogsCommands(_dir):
+    client.add_cog(_dir.ping.Basic(client))
+    client.add_cog(_dir.ver.Basic(client))
+    client.add_cog(_dir.say.Basic(client))
+    client.add_cog(_dir.play.Basic(client))
+    client.add_cog(_dir.changelog.Basic(client))
+    client.add_cog(_dir.reload.Basic(client))
 
 
 
