@@ -17,13 +17,8 @@ import BotCommands.reload
 import BotCommands.__init__
 # In the future this huge list of "import BotCommands" wil be deleted
 
-load_dotenv() # Load the .env file
-TOKEN = os.getenv('DISCORD_TOKEN') # get token 
-GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
-client = commands.Bot(command_prefix='!') #Command prefix
 
-#print (len([name for name in os.listdir('.') if os.path.isfile(name)]))
-
+# LOAD CONFIG FILE
 with open('config.json') as config:
     json_data = json.load(config)
 
@@ -36,8 +31,8 @@ with open('config.json') as config:
 bot_branch = json_data["bot_branch"]
 bot_version = json_data["bot_version"]
 bot_version_dev = json_data["bot_version_dev"]
-bot_version_info = "none"#json_data["bot_version_info"]
-
+bot_version_info = json_data["bot_version_info"]
+bot_prefix = json_data["bot_prefix"]
 # ------------|  Join/Left event config variables  |-----
 
 welcome_dm = json_data["welcome_dm"]
@@ -52,9 +47,22 @@ left_msg = json_data["goodbye_ch_msg"]
 
 
 
+load_dotenv() # Load the .env file
+TOKEN = os.getenv('DISCORD_TOKEN') # get token 
+GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
+client = commands.Bot(command_prefix=bot_prefix) #Command prefix
+
+#print (len([name for name in os.listdir('.') if os.path.isfile(name)]))
+
+
+
 
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
     print('Bot is ready')
     await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
     loadCogsCommands(BotCommands) # Loads all the commands in a folder
@@ -149,6 +157,7 @@ def loadCogsCommands(_dir):
     client.add_cog(_dir.play.Basic(client))
     client.add_cog(_dir.changelog.Basic(client))
     client.add_cog(_dir.reload.Basic(client))
+
 
 
 
