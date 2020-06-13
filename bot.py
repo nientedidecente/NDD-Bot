@@ -65,7 +65,7 @@ async def on_ready():  # When the bot is connected to Discord do:
     print('------')
     print('Bot is ready')
     await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
-    loadCogsCommands(BotCommands) # Loads all the commands in a folder
+    loadCogsCommands(BotCommands) # Loads all the commands in the folder
 
 
 '''
