@@ -1,10 +1,12 @@
 # bot.py
 import os
+import time
 import discord
 import random
 import json
 import threading
 import asyncio
+import logging
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -22,6 +24,17 @@ import BotCommands.__init__
 with open('config.json') as config:
     json_data = json.load(config)
 
+
+
+
+localtime = time.asctime(time.localtime(time.time()))
+
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 '''
 ------------------------------------------------
@@ -52,20 +65,25 @@ TOKEN = os.getenv('DISCORD_TOKEN') # get token
 GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
 client = commands.Bot(command_prefix=bot_prefix) #Command prefix
 
-#print (len([name for name in os.listdir('.') if os.path.isfile(name)]))
+
 
 
 
 
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
-    print('Bot is ready')
-    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
-    loadCogsCommands(BotCommands) # Loads all the commands in the folder
+    log('Setting discord presence...')
+    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}')) # Set presence
+    log('Loading Cogs...')
+    loadCogsCommands(BotCommands) # Load cogs from ./BotCommands
+    log('------')
+    log('| Logged in as')
+    log(f'| {client.user.name}')
+    log(f'| ID: {client.user.id}')
+    log('------')
+    log('Bot is ready')
+    
+
 
 
 '''
@@ -114,16 +132,16 @@ async def debug_error(ctx, error):
 @client.event
 async def on_member_join(member): # when a user joins a guild do:
 
-    print('on_member_join event triggered')
+    log('on_member_join event triggered')
 
     for channel in member.guild.channels: #search the channel
-        print(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
-        print(f'ID is <{welcome_ch_id}>')
-        print(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
+        log(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
+        log(f'ID is <{welcome_ch_id}>')
+        log(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
 
         if str(channel.id) == welcome_ch_id: #compare channels id
-            print(f'{welcome_ch_name} channel found.')
-            print(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
+            log(f'{welcome_ch_name} channel found.')
+            log(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
 
             await channel.send(f'{member.mention}{join_msg}') # Send the "chwelcome_msg" object value to the channel
             await member.send(f'Benvenut* {member.mention}{welcome_dm}') # Send the "chwelcome_dm" object value to the user
@@ -133,16 +151,16 @@ async def on_member_join(member): # when a user joins a guild do:
 @client.event
 async def on_member_remove(member): # when a user joins a guild do:
 
-    print('on_member_remove event triggered')
+    log('on_member_remove event triggered')
 
     for channel in member.guild.channels: #search the channel
-        print(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
-        print(f'ID is <{welcome_ch_id}>')
-        print(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
+        log(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
+        log(f'ID is <{welcome_ch_id}>')
+        log(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
 
         if str(channel.id) == welcome_ch_id: #compare channels id
-            print(f'{welcome_ch_name} channel found.')
-            print(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
+            log(f'{welcome_ch_name} channel found.')
+            log(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
 
             await channel.send(f'{member.mention}{left_msg}') 
             #await member.send(f'Benvenut* {member.mention}{welcome_dm}') # There is no DM left message
@@ -157,6 +175,18 @@ def loadCogsCommands(_dir):
     client.add_cog(_dir.play.Basic(client))
     client.add_cog(_dir.changelog.Basic(client))
     client.add_cog(_dir.reload.Basic(client))
+
+
+def log(txt):    
+    
+    print(f'[{localtime}]: {txt}\n')
+    with open("./bot.log", "a") as debugFile:
+        debugFile.write(f'[{localtime}]: {txt}\n')
+        print(debugFile.closed)
+
+    print(debugFile.closed)
+
+
 
 
 
