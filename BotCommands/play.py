@@ -1,19 +1,12 @@
-import os
 import discord
-import asyncio
 import json
 from discord.ext import commands
 import logging
 
 logger = logging.getLogger(__name__)
 
-#simport bot
-
-#client = commands.Bot(command_prefix='!') #Command prefix
-
 with open('config.json') as config:
     json_data = json.load(config)
-
 
 '''
 ------------------------------------------------
@@ -26,20 +19,19 @@ bot_version_info = json_data["bot_version_info"]
 # ------------------------------------------------
 
 
-
-class Basic(commands.Cog):
+class Cog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
     # !play command
     @commands.command()
-    async def play(self, ctx, arg):
+    async def play(self, ctx, *args):
         logger.debug("Play command called")
 
-        if arg == "reset":
+        if args[0] == "reset":
             await ctx.send('Ok! Setting my playing status to: `default`')
-            await commands.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
+            await self.bot.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
         else:
-            await ctx.send(f'Ok! Im setting my playing status to: {arg}') # Send what the user just said
-            await commands.change_presence(activity=discord.Game(name=arg))
+            await ctx.send(f'Ok! Im setting my playing status to: {" ".join(args)}')  # Send what the user just said
+            await self.bot.change_presence(activity=discord.Game(name=" ".join(args)))

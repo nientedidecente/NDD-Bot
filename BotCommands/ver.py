@@ -1,14 +1,8 @@
-import os
-import discord
-import asyncio
 import json
 from discord.ext import commands
 
-#client = commands.Bot(command_prefix='!') #Command prefix
-
 with open('config.json') as config:
     json_data = json.load(config)
-
 
 '''
 ------------------------------------------------
@@ -21,11 +15,11 @@ bot_version_info = json_data["bot_version_info"]
 # ------------------------------------------------
 
 
-class Basic(commands.Cog):
+class Cog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-    
+
     # !ver command
     @commands.command()
     async def ver(self, ctx):
