@@ -1,1 +1,8 @@
-__all__ = ["ping", "ver", "say", "play"]
+__all__ = [
+    "changelog",
+    "ping",
+    "play",
+    "reload",
+    "say",
+    "ver",
+]
