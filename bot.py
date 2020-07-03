@@ -15,6 +15,8 @@ from BotCommands import *
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
 logger = logging.getLogger(__name__)
 
+
+
 # LOAD CONFIG FILE
 with open('config.json') as config:
     json_data = json.load(config)
@@ -57,7 +59,7 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug(f'| {client.user.name}')
     logger.debug(f'| ID: {client.user.id}')
     logger.debug('------')
-    logger.debug('Bot is ready')
+    logger.info("Bot is ready")
 
 
 '''
@@ -71,7 +73,7 @@ async def on_ready():  # When the bot is connected to Discord do:
 async def debug(ctx, *, arg):
 
     if bot_version_dev == "True":
-        if arg == "y":
+        if arg[0] == "var":
             await ctx.send('-----Debug start-----')
             await ctx.send('|')
             await ctx.send(f'bot_branch:        `{bot_branch}`')
@@ -86,6 +88,9 @@ async def debug(ctx, *, arg):
             await ctx.send(f'cake:              `{json_data["cake"]}`')
             await ctx.send('|')
             await ctx.send('-----Debug end-----')
+        if arg[0] == "event":
+            await ctx.send(arg[1])
+            arg[1]()
     else:
         await ctx.send('Bot is in stable version, no need for debuging')
 
@@ -94,6 +99,19 @@ async def debug(ctx, *, arg):
 async def debug_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('WARNING! The bot will spam all the variables, it could disturb people with notifications active.\nContinue? (!debug y)')
+
+
+@client.command()
+async def devtest(ctx, ):
+    embed = discord.Embed(title=":tools: Debug Menu :tools:", colour=discord.Colour(0xf8e71c), description="Please select an option")
+
+    embed.set_author(name="Please select an option")
+
+    embed.add_field(name="‎", value="‎", inline=False)
+    embed.add_field(name="!debug event [name_of_event]", value="Invoke an event", inline=True)
+    embed.add_field(name="!debug var", value="Print all the variables", inline=True)
+
+    await ctx.channel.send(embed=embed)
 
 
 '''
@@ -107,6 +125,7 @@ async def debug_error(ctx, error):
 @client.event
 async def on_member_join(member): # when a user joins a guild do:
 
+    logger.info(f'User {member} joined guild {member.guild}')
     logger.debug('on_member_join event triggered')
 
     for channel in member.guild.channels: #search the channel
