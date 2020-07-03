@@ -84,13 +84,15 @@ async def on_ready():  # When the bot is connected to Discord do:
 async def debug(ctx, *, arg):
 
     if bot_version_dev == "True":
-        if arg[0] == "var":
+        
             await ctx.send('-----Debug start-----')
             await ctx.send('|')
             await ctx.send(f'bot_branch:        `{bot_branch}`')
             await ctx.send(f'bot_version:       `{bot_version}`')
             await ctx.send(f'bot_version_dev:   `{bot_version_dev}`')
             await ctx.send(f'bot_version_info:  `{bot_version_info}`')
+            await ctx.send(f'bot_prefix:        `{bot_prefix}`')
+            await ctx.send(f'bot_prefix_dev:    `{bot_prefix_dev}`')
             await ctx.send(f'welcome_dm:        `{welcome_dm}`')
             await ctx.send(f'welcome_ch_id:     `{welcome_ch_id}`')
             await ctx.send(f'welcome_ch_name:   `{welcome_ch_name}`')
@@ -100,14 +102,12 @@ async def debug(ctx, *, arg):
             await ctx.send('|')
             await ctx.send('-----Debug end-----')
 
-        else:
-            await ctx.send('Bot is in stable version, no need for debuging')
+    else:
+        await ctx.send('Bot is in stable version, no need for debuging')
 
 '''        if arg[0] == "event":
             await ctx.send(arg[1])
             arg[1]()'''
-        else:
-            await ctx.send('Bot is in stable version, no need for debuging')
 
 
 @debug.error
