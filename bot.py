@@ -99,11 +99,15 @@ async def debug(ctx, *, arg):
             await ctx.send(f'cake:              `{json_data["cake"]}`')
             await ctx.send('|')
             await ctx.send('-----Debug end-----')
-        if arg[0] == "event":
+
+        else:
+            await ctx.send('Bot is in stable version, no need for debuging')
+
+'''        if arg[0] == "event":
             await ctx.send(arg[1])
-            arg[1]()
-    else:
-        await ctx.send('Bot is in stable version, no need for debuging')
+            arg[1]()'''
+        else:
+            await ctx.send('Bot is in stable version, no need for debuging')
 
 
 @debug.error
