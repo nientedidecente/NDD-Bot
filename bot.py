@@ -45,7 +45,7 @@ left_msg = json_data["goodbye_ch_msg"]
 
 load_dotenv()  # Load the .env file
 TOKEN = os.getenv('DISCORD_TOKEN')  # get token
-client = commands.Bot(command_prefix="!")  # Command prefix
+client = commands.Bot(command_prefix=bot_prefix)  # Command prefix
 
 
 @client.event
