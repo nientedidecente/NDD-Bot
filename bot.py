@@ -31,6 +31,7 @@ bot_version = json_data["bot_version"]
 bot_version_dev = json_data["bot_version_dev"]
 bot_version_info = json_data["bot_version_info"]
 bot_prefix = json_data["bot_prefix"]
+bot_prefix_dev = json_data["bot_prefix_dev"]
 # ------------|  Join/Left event config variables  |-----
 
 welcome_dm = json_data["welcome_dm"]
@@ -45,7 +46,17 @@ left_msg = json_data["goodbye_ch_msg"]
 
 load_dotenv()  # Load the .env file
 TOKEN = os.getenv('DISCORD_TOKEN')  # get token
-client = commands.Bot(command_prefix=bot_prefix)  # Command prefix
+prefix = bot_prefix
+
+if bot_version_dev == "True":
+    logger.debug('Using bot in Developer Mode')
+    prefix = bot_prefix_dev
+
+if bot_prefix == bot_prefix_dev:
+    logger.warning('The Normal Mode command prefix is equal to the prefix for Developer Mode, please change it to another value')
+
+logger.debug(f'Setting command prefix to "{prefix}"')
+client = commands.Bot(command_prefix=prefix)  # Command prefix
 
 
 @client.event
