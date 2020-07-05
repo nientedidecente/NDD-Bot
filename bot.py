@@ -15,7 +15,9 @@ from BotCommands import *
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
 logger = logging.getLogger(__name__)
 
-
+logger.info('.------------------------------.')
+logger.info('|      Starting Bot...         |')
+logger.info('.------------------------------.')
 
 # LOAD CONFIG FILE
 with open('config.json') as config:
@@ -48,6 +50,7 @@ load_dotenv()  # Load the .env file
 TOKEN = os.getenv('DISCORD_TOKEN')  # get token
 prefix = bot_prefix
 
+
 if bot_version_dev == "True":
     logger.debug('Using bot in Developer Mode')
     prefix = bot_prefix_dev
@@ -57,6 +60,7 @@ if bot_prefix == bot_prefix_dev:
 
 logger.debug(f'Setting command prefix to "{prefix}"')
 client = commands.Bot(command_prefix=prefix)  # Command prefix
+
 
 
 @client.event
@@ -101,7 +105,7 @@ async def debug(ctx, *, arg):
             await ctx.send(f'cake:              `{json_data["cake"]}`')
             await ctx.send('|')
             await ctx.send('-----Debug end-----')
-
+            
     else:
         await ctx.send('Bot is in stable version, no need for debuging')
 
