@@ -9,9 +9,7 @@ with open('config.json') as config:
                 CONFIG VARIABLES
 ------------------------------------------------
 '''
-bot_branch = json_data["bot_branch"]
-bot_version = json_data["bot_version"]
-bot_version_info = json_data["bot_version_info"]
+
 # ------------------------------------------------
 
 

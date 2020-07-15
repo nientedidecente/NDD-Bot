@@ -13,9 +13,13 @@ with open('config.json') as config:
                 CONFIG VARIABLES
 ------------------------------------------------
 '''
-bot_branch = json_data["bot_branch"]
-bot_version = json_data["bot_version"]
-bot_version_info = json_data["bot_version_info"]
+bot = json_data["bot"]
+event = json_data["eventsVars"]
+
+# HiemSword: Yes, i know this loop is not the best method, but it works
+for i in json_data["bot"]:
+    bot_branch = i["branch"]
+    bot_version = i["version"]
 # ------------------------------------------------
 
 

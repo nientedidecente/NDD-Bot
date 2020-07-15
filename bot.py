@@ -10,6 +10,7 @@ from discord.ext import commands
 from pathlib import Path
 
 from BotCommands import *
+from BotExtensions import *
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -28,21 +29,32 @@ with open('config.json') as config:
                 CONFIG VARIABLES
 ------------------------------------------------
 '''
-bot_branch = json_data["bot_branch"]
-bot_version = json_data["bot_version"]
-bot_version_dev = json_data["bot_version_dev"]
-bot_version_info = json_data["bot_version_info"]
-bot_prefix = json_data["bot_prefix"]
-bot_prefix_dev = json_data["bot_prefix_dev"]
+bot = json_data["bot"]
+event = json_data["eventsVars"]
+
+# HiemSword: Yes, i know this loop is not the best method, but it works
+for i in json_data["bot"]:
+    bot_branch = i["branch"]
+    bot_version = i["version"]
+    bot_version_dev = i["dev"]
+    bot_version_info = i["info"]
+    bot_prefix = i["prefix"]
+    bot_prefix_dev = i["prefix_dev"]
+
+    extensionsEnabled = i["extensionsEnabled"]
+
 # ------------|  Join/Left event config variables  |-----
 
-welcome_dm = json_data["welcome_dm"]
+for i in json_data["eventsVars"]:
+    for ii in i["join&leave"]:
 
-welcome_ch_id = json_data["welcome_ch_id"]
-welcome_ch_name = json_data["welcome_ch_name"]
+        welcome_dm = ii["dm_msg"]
 
-join_msg = json_data["welcome_ch_msg"]
-left_msg = json_data["goodbye_ch_msg"]
+        welcome_ch_id = ii["ch_id"]
+        welcome_ch_name = ii["ch_name"]
+
+        join_msg = ii["hello_msg"]
+        left_msg = ii["bye_msg"]
 
 # ------------------------------------------------
 
@@ -51,7 +63,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')  # get token
 prefix = bot_prefix
 
 
-if bot_version_dev == "True":
+if bot_version_dev == True:
     logger.debug('Using bot in Developer Mode')
     prefix = bot_prefix_dev
 
@@ -69,6 +81,8 @@ async def on_ready():  # When the bot is connected to Discord do:
     await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}')) # Set presence
     logger.debug('Loading Cogs...')
     load_cogs()
+    logger.debug('Loading Extensions...')
+    load_ext()
     logger.debug('------')
     logger.debug('| Logged in as')
     logger.debug(f'| {client.user.name}')
@@ -87,50 +101,39 @@ async def on_ready():  # When the bot is connected to Discord do:
 @client.command()
 async def debug(ctx, *, arg):
 
-    if bot_version_dev == "True":
+    if bot_version_dev == True:
         
-            await ctx.send('-----Debug start-----')
-            await ctx.send('|')
-            await ctx.send(f'bot_branch:        `{bot_branch}`')
-            await ctx.send(f'bot_version:       `{bot_version}`')
-            await ctx.send(f'bot_version_dev:   `{bot_version_dev}`')
-            await ctx.send(f'bot_version_info:  `{bot_version_info}`')
-            await ctx.send(f'bot_prefix:        `{bot_prefix}`')
-            await ctx.send(f'bot_prefix_dev:    `{bot_prefix_dev}`')
-            await ctx.send(f'welcome_dm:        `{welcome_dm}`')
-            await ctx.send(f'welcome_ch_id:     `{welcome_ch_id}`')
-            await ctx.send(f'welcome_ch_name:   `{welcome_ch_name}`')
-            await ctx.send(f'welcome_ch_msg:    `{join_msg}`')
-            await ctx.send(f'goodbye_ch_msg:    `{left_msg}`')
-            await ctx.send(f'cake:              `{json_data["cake"]}`')
-            await ctx.send('|')
-            await ctx.send('-----Debug end-----')
+            await ctx.send(f'Please check your DMs {ctx.author.display_name}!')
+
+            # We send the debug message to the author DMs to prevent notification spam        
+            await ctx.author.send('-----Debug start-----')
+
+            for i in json_data: 
+                await ctx.author.send('|')
+                await ctx.author.send(f'{i}:        `{json_data[i]}`')
+            
+            await ctx.author.send('|')
+            await ctx.author.send('-----Debug end-----')
             
     else:
         await ctx.send('Bot is in stable version, no need for debuging')
-
-'''        if arg[0] == "event":
-            await ctx.send(arg[1])
-            arg[1]()'''
 
 
 @debug.error
 async def debug_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('WARNING! The bot will spam all the variables, it could disturb people with notifications active.\nContinue? (!debug y)')
+        embed = discord.Embed(title=":tools: Debug Menu :tools:", colour=discord.Colour(0xf8e71c), description="Please select an option")
+
+        embed.set_author(name="Please select an option")
+
+        embed.add_field(name="‎", value="‎", inline=False)
+        embed.add_field(name="!debug event [name_of_event]", value="Invoke an event", inline=True)
+        embed.add_field(name="!debug var", value="Print all the variables", inline=True)
+
+        await ctx.channel.send(embed=embed)
 
 
-@client.command()
-async def devtest(ctx, ):
-    embed = discord.Embed(title=":tools: Debug Menu :tools:", colour=discord.Colour(0xf8e71c), description="Please select an option")
 
-    embed.set_author(name="Please select an option")
-
-    embed.add_field(name="‎", value="‎", inline=False)
-    embed.add_field(name="!debug event [name_of_event]", value="Invoke an event", inline=True)
-    embed.add_field(name="!debug var", value="Print all the variables", inline=True)
-
-    await ctx.channel.send(embed=embed)
 
 
 '''
@@ -189,5 +192,10 @@ def load_cogs():
     client.add_cog(say.Cog(client))
     client.add_cog(ver.Cog(client))
 
+def load_ext():
+    if extensionsEnabled == True:
+        client.load_extension('BotExtensions.hello')
+    else:
+        logger.debug('Extensions are disabled')
 
 client.run(TOKEN)  # Start the bot
