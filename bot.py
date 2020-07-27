@@ -60,8 +60,9 @@ for i in json_data["eventsVars"]:
 
 load_dotenv()  # Load the .env file
 TOKEN = os.getenv('DISCORD_TOKEN')  # get token
-prefix = bot_prefix
 
+
+prefix = bot_prefix
 
 if bot_version_dev == True:
     logger.debug('Using bot in Developer Mode')
