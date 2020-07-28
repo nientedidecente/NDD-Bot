@@ -1,0 +1,22 @@
+[tool]
+
+[tool.poetry]
+
+authors = ["HiemSword <hiemsword08+contact@pm.me>"]
+
+description = "A customizable Discord Bot built in python"
+
+name = "ndd-bot"
+
+version = "0.1.2"
+
+[tool.poetry.dependencies]
+
+"discord.py" = "*"
+
+flask = "*"
+
+python = "^3.8"
+
+python-dotenv = "*"
+
