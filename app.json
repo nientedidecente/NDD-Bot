@@ -1,9 +1,0 @@
-{
-  "name": "NDD-Bot",
-  "description": "A Discord Bot for the NDD Open Source Community",
-  "image": "heroku/python",
-  "repository": "https://github.com/nientedidecente/NDD-Bot",
-  "keywords": ["python", "discord" ],
-  "addons": [ "" ]
-
-}

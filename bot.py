@@ -12,6 +12,8 @@ from pathlib import Path
 from BotCommands import *
 from BotExtensions import *
 
+from webserver import keep_alive
+
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
 logger = logging.getLogger(__name__)
@@ -199,4 +201,5 @@ def load_ext():
     else:
         logger.debug('Extensions are disabled')
 
+keep_alive() # Run webserver
 client.run(TOKEN)  # Start the bot
