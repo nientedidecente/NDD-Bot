@@ -194,9 +194,12 @@ def load_cogs():
     client.add_cog(ver.Cog(client))
 
 def load_ext():
+    _dir = os.listdir("./BotExtensions")
     if extensionsEnabled == True:
-        client.load_extension('BotExtensions.hello')
+        for i in _dir:
+            print(f'Loading {i}')
+            client.load_extension(i)
     else:
-        logger.debug('Extensions are disabled')
+        logger.debug('Extensions are disabled. Ignoring')
 
 client.run(TOKEN)  # Start the bot
