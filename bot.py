@@ -10,7 +10,8 @@ from discord.ext import commands
 from pathlib import Path
 
 from BotCommands import *
-from BotExtensions import *
+
+from import_all_modules import _import_all_modules
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -55,6 +56,10 @@ for i in json_data["eventsVars"]:
 
         join_msg = ii["hello_msg"]
         left_msg = ii["bye_msg"]
+# ------------|  Extensions variables |-----
+
+
+extensions_list = [""] * 30 # please someone find a better way to do this
 
 # ------------------------------------------------
 
@@ -83,14 +88,14 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug('Loading Cogs...')
     load_cogs()
     logger.debug('Loading Extensions...')
-    load_ext()
+    extensions_num = load_ext()
     logger.debug('------')
     logger.debug('| Logged in as')
     logger.debug(f'| {client.user.name}')
     logger.debug(f'| ID: {client.user.id}')
+    logger.debug(f'| Total extensions installed: {extensions_num}')
     logger.debug('------')
     logger.info("Bot is ready")
-
 
 '''
 ------------------------------------------------
@@ -100,7 +105,7 @@ async def on_ready():  # When the bot is connected to Discord do:
 
 
 @client.command()
-async def debug(ctx, *, arg):
+async def debug(ctx, arg):
 
     if bot_version_dev == True:
         
@@ -194,11 +199,19 @@ def load_cogs():
     client.add_cog(ver.Cog(client))
 
 def load_ext():
-    _dir = os.listdir("./BotExtensions")
+
+    index = 0
+
     if extensionsEnabled == True:
-        for i in _dir:
-            print(f'Loading {i}')
-            client.load_extension(i)
+
+        for module in _import_all_modules():
+            logger.debug(f'Importing extension {module}')
+            client.load_extension('BotExtensions.{}'.format(module))
+            extensions_list[index] = module
+            index += 1
+        return index
+        
+
     else:
         logger.debug('Extensions are disabled. Ignoring')
 
