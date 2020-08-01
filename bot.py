@@ -11,7 +11,7 @@ from pathlib import Path
 
 from BotCommands import *
 
-from import_all_modules import _import_all_modules
+import import_all_modules 
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -204,7 +204,7 @@ def load_ext():
 
     if extensionsEnabled == True:
 
-        for module in _import_all_modules():
+        for module in import_all_modules._import_all_modules():
             logger.debug(f'Importing extension {module}')
             client.load_extension('BotExtensions.{}'.format(module))
             extensions_list[index] = module
