@@ -1,6 +1,7 @@
 # bot.py
 
 import os
+import sys
 import discord
 import json
 import logging.config
@@ -11,7 +12,7 @@ from pathlib import Path
 
 from BotCommands import *
 
-import import_all_modules 
+import import_all_ext
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -58,7 +59,7 @@ for i in json_data["eventsVars"]:
         left_msg = ii["bye_msg"]
 # ------------|  Extensions variables |-----
 
-
+extensions_dir = 'BotExtensions'
 extensions_list = [""] * 30 # please someone find a better way to do this
 
 # ------------------------------------------------
@@ -93,7 +94,9 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug('| Logged in as')
     logger.debug(f'| {client.user.name}')
     logger.debug(f'| ID: {client.user.id}')
-    logger.debug(f'| Total extensions installed: {extensions_num}')
+    logger.debug(f'| Total extensions: {extensions_num}')
+    logger.debug(f'| Discord.py ver: {discord.__version__}')
+    logger.debug(f'| Bot version: {bot_version}, {bot_branch}')
     logger.debug('------')
     logger.info("Bot is ready")
 
@@ -191,12 +194,13 @@ async def on_member_remove(member): # when a user joins a guild do:
 
 
 def load_cogs():
-    client.add_cog(changelog.Cog(client))
+   ''' client.add_cog(changelog.Cog(client))
     client.add_cog(ping.Cog(client))
     client.add_cog(play.Cog(client))
     client.add_cog(reload.Cog(client))
     client.add_cog(say.Cog(client))
-    client.add_cog(ver.Cog(client))
+    client.add_cog(ver.Cog(client))'''
+
 
 def load_ext():
 
@@ -204,15 +208,33 @@ def load_ext():
 
     if extensionsEnabled == True:
 
-        for module in import_all_modules._import_all_modules():
-            logger.debug(f'Importing extension {module}')
-            client.load_extension('BotExtensions.{}'.format(module))
-            extensions_list[index] = module
+
+        for extension in import_all_ext.import_all_ext(extensions_dir):
+            logger.debug(f'Importing extension {extension}')
+
+            try:
+                client.load_extension('{}'.format(extension))
+                #client.load_extension('BotExtensions.default')
+            except:
+                logger.error(f'An error occurred while loading an extension ({extension} ; {sys.exc_info()[0]})')
+                logger.debug(f'Error: {sys.exc_info()}')
+
+
+            extensions_list[index] = extension
             index += 1
-        return index
-        
+
 
     else:
         logger.debug('Extensions are disabled. Ignoring')
+    return index
 
-client.run(TOKEN)  # Start the bot
+
+
+try:
+    client.run(TOKEN)  # Start the bot
+except:
+    logger.error(f'Fatal error: {sys.exc_info()[0]}')
+    logger.log(f'Error: {sys.exc_info()}')
+    logger.error('Bot is exiting...')
+    raise
+
