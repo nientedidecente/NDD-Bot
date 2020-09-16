@@ -1,64 +1,63 @@
 # bot.py
+
 import os
+import sys
 import discord
-import random
 import json
-import threading
-import asyncio
+import logging.config
+
 from dotenv import load_dotenv
 from discord.ext import commands
+from pathlib import Path
 
-import BotCommands.ping
-import BotCommands.ver
-import BotCommands.play
-import BotCommands.say
-import BotCommands.changelog
-import BotCommands.reload
-import BotCommands.__init__
-# In the future this huge list of "import BotCommands" wil be deleted
+import func.vars as v
+from func.load_addons import load_addons
+from func.import_addons import import_all_addons
 
-load_dotenv() # Load the .env file
-TOKEN = os.getenv('DISCORD_TOKEN') # get token 
-GUILD = os.getenv('DISCORD_GUILD') # UNUSED - get guild name
-client = commands.Bot(command_prefix='!') #Command prefix
+# Initial Setup
+logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
+logger = logging.getLogger(__name__)
 
-#print (len([name for name in os.listdir('.') if os.path.isfile(name)]))
-
-with open('config.json') as config:
-    json_data = json.load(config)
+logger.info('.------------------------------.')
+logger.info('|      Starting Bot...         |')
+logger.info('.------------------------------.')
 
 
-'''
-------------------------------------------------
-                CONFIG VARIABLES
-------------------------------------------------
-'''
-bot_branch = json_data["bot_branch"]
-bot_version = json_data["bot_version"]
-bot_version_dev = json_data["bot_version_dev"]
-bot_version_info = "none"#json_data["bot_version_info"]
+load_dotenv()  # Load the .env file
+TOKEN = os.getenv('DISCORD_TOKEN')  # get token
 
-# ------------|  Join/Left event config variables  |-----
 
-welcome_dm = json_data["welcome_dm"]
+prefix = v.bot_prefix
 
-welcome_ch_id = json_data["welcome_ch_id"]
-welcome_ch_name = json_data["welcome_ch_name"]
+if v.bot_version_dev == True:
+    logger.debug('Using bot in Developer Mode')
+    prefix = v.bot_prefix_dev
 
-join_msg = json_data["welcome_ch_msg"]
-left_msg = json_data["goodbye_ch_msg"]
+if v.bot_prefix == v.bot_prefix_dev:
+    logger.warning('The Normal Mode command prefix is equal to the prefix for Developer Mode, please change it to another value')
 
-# ------------------------------------------------
-
+logger.debug(f'Setting command prefix to "{prefix}"')
+client = commands.Bot(command_prefix=prefix)  # Command prefix
 
 
 
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
-    print('Bot is ready')
-    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}'))
-    loadCogsCommands(BotCommands) # Loads all the commands in a folder
+    logger.debug('Setting discord presence...')
+    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {v.bot_branch}|{v.bot_version}')) # Set presence
 
+
+    logger.debug('Loading Addons...')
+    addons_num = load_addons()
+    logger.debug('------')
+    logger.debug('| Logged in as')
+    logger.debug(f'| {client.user.name}')
+    logger.debug(f'| ID: {client.user.id}')
+    logger.debug(f'| Total addons installed: {addons_num}')
+    logger.debug(f'| Discord.py ver: {discord.__version__}')
+    logger.debug(f'| Bot version: {v.bot_version}, {v.bot_branch}')
+    logger.debug('------')
+    logger.info("Bot is ready")
 
 '''
 ------------------------------------------------
@@ -68,88 +67,46 @@ async def on_ready():  # When the bot is connected to Discord do:
 
 
 @client.command()
-async def debug(ctx, *, arg):
+async def debug(ctx, arg):
 
-    if bot_version_dev == "True":
-        if arg == "y":
-            await ctx.send('-----Debug start-----')
-            await ctx.send('|')
-            await ctx.send(f'bot_branch:        `{bot_branch}`')
-            await ctx.send(f'bot_version:       `{bot_version}`')
-            await ctx.send(f'bot_version_dev:   `{bot_version_dev}`')
-            await ctx.send(f'bot_version_info:  `{bot_version_info}`')
-            await ctx.send(f'welcome_dm:        `{welcome_dm}`')
-            await ctx.send(f'welcome_ch_id:     `{welcome_ch_id}`')
-            await ctx.send(f'welcome_ch_name:   `{welcome_ch_name}`')
-            await ctx.send(f'welcome_ch_msg:    `{join_msg}`')
-            await ctx.send(f'goodbye_ch_msg:    `{left_msg}`')
-            await ctx.send(f'cake:              `{json_data["cake"]}`')
-            await ctx.send('|')
-            await ctx.send('-----Debug end-----')
+    if v.bot_version_dev == True:
+        
+            await ctx.send(f'Please check your DMs {ctx.author.display_name}!')
+
+            # We send the debug message to the author DMs to prevent notification spam        
+            await ctx.author.send('-----Debug start-----')
+
+            for i in v.json_data: 
+                await ctx.author.send('|')
+                await ctx.author.send(f'{i}:        `{v.json_data[i]}`')
+            
+            await ctx.author.send('|')
+            await ctx.author.send('-----Debug end-----')
+            
     else:
         await ctx.send('Bot is in stable version, no need for debuging')
+
 
 @debug.error
 async def debug_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('WARNING! The bot will spam all the variables, it could disturb people with notifications active.\nContinue? (!debug y)')
+        embed = discord.Embed(title=":tools: Debug Menu :tools:", colour=discord.Colour(0xf8e71c), description="Please select an option")
+
+        embed.set_author(name="Please select an option")
+
+        embed.add_field(name="‎", value="‎", inline=False)
+        embed.add_field(name="!debug event [name_of_event]", value="Invoke an event", inline=True)
+        embed.add_field(name="!debug var", value="Print all the variables", inline=True)
+
+        await ctx.channel.send(embed=embed)
 
 
 
-'''
-------------------------------------------------
-                EVENTS
-------------------------------------------------
-'''
 
-# ---- Member Join event
-@client.event
-async def on_member_join(member): # when a user joins a guild do:
-
-    print('on_member_join event triggered')
-
-    for channel in member.guild.channels: #search the channel
-        print(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
-        print(f'ID is <{welcome_ch_id}>')
-        print(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
-
-        if str(channel.id) == welcome_ch_id: #compare channels id
-            print(f'{welcome_ch_name} channel found.')
-            print(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
-
-            await channel.send(f'{member.mention}{join_msg}') # Send the "chwelcome_msg" object value to the channel
-            await member.send(f'Benvenut* {member.mention}{welcome_dm}') # Send the "chwelcome_dm" object value to the user
-            return
-
-# ---- Member Leave event
-@client.event
-async def on_member_remove(member): # when a user joins a guild do:
-
-    print('on_member_remove event triggered')
-
-    for channel in member.guild.channels: #search the channel
-        print(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
-        print(f'ID is <{welcome_ch_id}>')
-        print(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
-
-        if str(channel.id) == welcome_ch_id: #compare channels id
-            print(f'{welcome_ch_name} channel found.')
-            print(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
-
-            await channel.send(f'{member.mention}{left_msg}') 
-            #await member.send(f'Benvenut* {member.mention}{welcome_dm}') # There is no DM left message
-            return
-
-
-
-def loadCogsCommands(_dir):
-    client.add_cog(_dir.ping.Basic(client))
-    client.add_cog(_dir.ver.Basic(client))
-    client.add_cog(_dir.say.Basic(client))
-    client.add_cog(_dir.play.Basic(client))
-    client.add_cog(_dir.changelog.Basic(client))
-    client.add_cog(_dir.reload.Basic(client))
-
-
-
-client.run(TOKEN) #Start the bot
+try:
+    client.run(TOKEN)  # Start the bot
+except:
+    logger.error(f'Fatal error: {sys.exc_info()[0]}')
+    logger.log(f'Error: {sys.exc_info()}')
+    logger.error('Bot is exiting...')
+    raise
