@@ -42,7 +42,7 @@ for i in json_data["eventsVars"]:
         left_msg = ii["bye_msg"]
 # ------------|  Extensions variables |-----
 
-addons_dir = 'BotExt'
+addons_dir = 'BotAddons'
 addons_list = [""] * 30 # please someone find a better way to do this
 
 # ------------------------------------------------

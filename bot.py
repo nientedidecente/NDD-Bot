@@ -11,8 +11,8 @@ from discord.ext import commands
 from pathlib import Path
 
 import func.vars as v
-
-import func.import_addons as addons
+from func.load_addons import load_addons
+from func.import_addons import import_all_addons
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -111,47 +111,6 @@ async def debug_error(ctx, error):
 '''
 
 
-# ---- Member Join event
-@client.event
-async def on_member_join(member): # when a user joins a guild do:
-
-    logger.info(f'User {member} joined guild {member.guild}')
-    logger.debug('on_member_join event triggered')
-
-    for channel in member.guild.channels: #search the channel
-        logger.debug(f'- - - Searching the "{v.welcome_ch_name}" channel...- - - ')
-        logger.debug(f'ID is <{v.welcome_ch_id}>')
-        logger.debug(f'Is "{str(channel)}" id the same as "{v.welcome_ch_name} id" ? {str(channel.id) == v.welcome_ch_id}')
-
-        if str(channel.id) == v.welcome_ch_id: #compare channels id
-            logger.debug(f'{v.welcome_ch_name} channel found.')
-            logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
-
-            await channel.send(f'{member.mention}{v.join_msg}') # Send the "chwelcome_msg" object value to the channel
-            await member.send(f'Benvenut* {member.mention}{v.welcome_dm}') # Send the "chwelcome_dm" object value to the user
-            return
-
-
-# ---- Member Leave event
-@client.event
-async def on_member_remove(member): # when a user joins a guild do:
-
-    logger.debug('on_member_remove event triggered')
-
-    for channel in member.guild.channels: #search the channel
-        logger.debug(f'- - - Searching the "{v.welcome_ch_name}" channel...- - - ')
-        logger.debug(f'ID is <{v.welcome_ch_id}>')
-        logger.debug(f'Is "{str(channel)}" id the same as "{v.welcome_ch_name} id" ? {str(channel.id) == v.welcome_ch_id}')
-
-        if str(channel.id) == v.welcome_ch_id: #compare channels id
-            logger.debug(f'{v.welcome_ch_name} channel found.')
-            logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
-
-            await channel.send(f'{member.mention}{v.left_msg}') 
-            #await member.send(f'Benvenut* {member.mention}{welcome_dm}') # There is no DM left message
-            return
-
-
 
 def load_addons():
 
@@ -160,16 +119,17 @@ def load_addons():
     if v.addonsEnabled == True:
 
 
-        for addon in addons.import_all_addons('BotExt', 'BotCogs'):
-            logger.debug(f'Importing extension {addon}')
+        for addon in import_all_addons(v.addons_dir):
+            logger.debug(f'Loading addon {addon}')
 
             try:
                 client.load_extension('{}'.format(addon))
 
+
             except:
                 logger.error(f'Unable to load addon "{addon}". Check the logs for more info')
                 logger.debug(f'Error: {sys.exc_info()}')
-
+            
 
             v.addons_list[index] = addon
             index += 1
