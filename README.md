@@ -1,5 +1,7 @@
 # Niente Di Decente - Discord Bot
 
+[![Run on Repl.it](https://repl.it/badge/github/nientedidecente/NDD-Bot)](https://repl.it/github/nientedidecente/NDD-Bot)
+
 ## How to run
 
 - Step 1 - Download this repository

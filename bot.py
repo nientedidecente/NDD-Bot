@@ -110,4 +110,3 @@ except:
     logger.log(f'Error: {sys.exc_info()}')
     logger.error('Bot is exiting...')
     raise
-
