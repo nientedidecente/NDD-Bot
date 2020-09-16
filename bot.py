@@ -10,9 +10,9 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from pathlib import Path
 
-from BotCommands import *
+import func.vars as v
 
-import import_all_ext
+import func.import_addons as addons
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -22,59 +22,18 @@ logger.info('.------------------------------.')
 logger.info('|      Starting Bot...         |')
 logger.info('.------------------------------.')
 
-# LOAD CONFIG FILE
-with open('config.json') as config:
-    json_data = json.load(config)
-
-'''
-------------------------------------------------
-                CONFIG VARIABLES
-------------------------------------------------
-'''
-bot = json_data["bot"]
-event = json_data["eventsVars"]
-
-# HiemSword: Yes, i know this loop is not the best method, but it works
-for i in json_data["bot"]:
-    bot_branch = i["branch"]
-    bot_version = i["version"]
-    bot_version_dev = i["dev"]
-    bot_version_info = i["info"]
-    bot_prefix = i["prefix"]
-    bot_prefix_dev = i["prefix_dev"]
-
-    extensionsEnabled = i["extensionsEnabled"]
-
-# ------------|  Join/Left event config variables  |-----
-
-for i in json_data["eventsVars"]:
-    for ii in i["join&leave"]:
-
-        welcome_dm = ii["dm_msg"]
-
-        welcome_ch_id = ii["ch_id"]
-        welcome_ch_name = ii["ch_name"]
-
-        join_msg = ii["hello_msg"]
-        left_msg = ii["bye_msg"]
-# ------------|  Extensions variables |-----
-
-extensions_dir = 'BotExtensions'
-extensions_list = [""] * 30 # please someone find a better way to do this
-
-# ------------------------------------------------
 
 load_dotenv()  # Load the .env file
 TOKEN = os.getenv('DISCORD_TOKEN')  # get token
 
 
-prefix = bot_prefix
+prefix = v.bot_prefix
 
-if bot_version_dev == True:
+if v.bot_version_dev == True:
     logger.debug('Using bot in Developer Mode')
-    prefix = bot_prefix_dev
+    prefix = v.bot_prefix_dev
 
-if bot_prefix == bot_prefix_dev:
+if v.bot_prefix == v.bot_prefix_dev:
     logger.warning('The Normal Mode command prefix is equal to the prefix for Developer Mode, please change it to another value')
 
 logger.debug(f'Setting command prefix to "{prefix}"')
@@ -85,18 +44,18 @@ client = commands.Bot(command_prefix=prefix)  # Command prefix
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
     logger.debug('Setting discord presence...')
-    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {bot_branch}|{bot_version}')) # Set presence
-    logger.debug('Loading Cogs...')
-    load_cogs()
-    logger.debug('Loading Extensions...')
-    extensions_num = load_ext()
+    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {v.bot_branch}|{v.bot_version}')) # Set presence
+
+
+    logger.debug('Loading Addons...')
+    addons_num = load_addons()
     logger.debug('------')
     logger.debug('| Logged in as')
     logger.debug(f'| {client.user.name}')
     logger.debug(f'| ID: {client.user.id}')
-    logger.debug(f'| Total extensions: {extensions_num}')
+    logger.debug(f'| Total addons installed: {addons_num}')
     logger.debug(f'| Discord.py ver: {discord.__version__}')
-    logger.debug(f'| Bot version: {bot_version}, {bot_branch}')
+    logger.debug(f'| Bot version: {v.bot_version}, {v.bot_branch}')
     logger.debug('------')
     logger.info("Bot is ready")
 
@@ -110,16 +69,16 @@ async def on_ready():  # When the bot is connected to Discord do:
 @client.command()
 async def debug(ctx, arg):
 
-    if bot_version_dev == True:
+    if v.bot_version_dev == True:
         
             await ctx.send(f'Please check your DMs {ctx.author.display_name}!')
 
             # We send the debug message to the author DMs to prevent notification spam        
             await ctx.author.send('-----Debug start-----')
 
-            for i in json_data: 
+            for i in v.json_data: 
                 await ctx.author.send('|')
-                await ctx.author.send(f'{i}:        `{json_data[i]}`')
+                await ctx.author.send(f'{i}:        `{v.json_data[i]}`')
             
             await ctx.author.send('|')
             await ctx.author.send('-----Debug end-----')
@@ -160,16 +119,16 @@ async def on_member_join(member): # when a user joins a guild do:
     logger.debug('on_member_join event triggered')
 
     for channel in member.guild.channels: #search the channel
-        logger.debug(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
-        logger.debug(f'ID is <{welcome_ch_id}>')
-        logger.debug(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
+        logger.debug(f'- - - Searching the "{v.welcome_ch_name}" channel...- - - ')
+        logger.debug(f'ID is <{v.welcome_ch_id}>')
+        logger.debug(f'Is "{str(channel)}" id the same as "{v.welcome_ch_name} id" ? {str(channel.id) == v.welcome_ch_id}')
 
-        if str(channel.id) == welcome_ch_id: #compare channels id
-            logger.debug(f'{welcome_ch_name} channel found.')
-            logger.debug(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
+        if str(channel.id) == v.welcome_ch_id: #compare channels id
+            logger.debug(f'{v.welcome_ch_name} channel found.')
+            logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
 
-            await channel.send(f'{member.mention}{join_msg}') # Send the "chwelcome_msg" object value to the channel
-            await member.send(f'Benvenut* {member.mention}{welcome_dm}') # Send the "chwelcome_dm" object value to the user
+            await channel.send(f'{member.mention}{v.join_msg}') # Send the "chwelcome_msg" object value to the channel
+            await member.send(f'Benvenut* {member.mention}{v.welcome_dm}') # Send the "chwelcome_dm" object value to the user
             return
 
 
@@ -180,54 +139,45 @@ async def on_member_remove(member): # when a user joins a guild do:
     logger.debug('on_member_remove event triggered')
 
     for channel in member.guild.channels: #search the channel
-        logger.debug(f'- - - Searching the "{welcome_ch_name}" channel...- - - ')
-        logger.debug(f'ID is <{welcome_ch_id}>')
-        logger.debug(f'Is "{str(channel)}" id the same as "{welcome_ch_name} id" ? {str(channel.id) == welcome_ch_id}')
+        logger.debug(f'- - - Searching the "{v.welcome_ch_name}" channel...- - - ')
+        logger.debug(f'ID is <{v.welcome_ch_id}>')
+        logger.debug(f'Is "{str(channel)}" id the same as "{v.welcome_ch_name} id" ? {str(channel.id) == v.welcome_ch_id}')
 
-        if str(channel.id) == welcome_ch_id: #compare channels id
-            logger.debug(f'{welcome_ch_name} channel found.')
-            logger.debug(f'- - - Done. Sending to the channel "{welcome_ch_name}" the welcome messagge- - - ')
+        if str(channel.id) == v.welcome_ch_id: #compare channels id
+            logger.debug(f'{v.welcome_ch_name} channel found.')
+            logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
 
-            await channel.send(f'{member.mention}{left_msg}') 
+            await channel.send(f'{member.mention}{v.left_msg}') 
             #await member.send(f'Benvenut* {member.mention}{welcome_dm}') # There is no DM left message
             return
 
 
-def load_cogs():
-   ''' client.add_cog(changelog.Cog(client))
-    client.add_cog(ping.Cog(client))
-    client.add_cog(play.Cog(client))
-    client.add_cog(reload.Cog(client))
-    client.add_cog(say.Cog(client))
-    client.add_cog(ver.Cog(client))'''
 
-
-def load_ext():
+def load_addons():
 
     index = 0
 
-    if extensionsEnabled == True:
+    if v.addonsEnabled == True:
 
 
-        for extension in import_all_ext.import_all_ext(extensions_dir):
-            logger.debug(f'Importing extension {extension}')
+        for addon in addons.import_all_addons('BotExt', 'BotCogs'):
+            logger.debug(f'Importing extension {addon}')
 
             try:
-                client.load_extension('{}'.format(extension))
-                #client.load_extension('BotExtensions.default')
+                client.load_extension('{}'.format(addon))
+
             except:
-                logger.error(f'An error occurred while loading an extension ({extension} ; {sys.exc_info()[0]})')
+                logger.error(f'Unable to load addon "{addon}". Check the logs for more info')
                 logger.debug(f'Error: {sys.exc_info()}')
 
 
-            extensions_list[index] = extension
+            v.addons_list[index] = addon
             index += 1
 
 
     else:
-        logger.debug('Extensions are disabled. Ignoring')
+        logger.debug('Addons are disabled. Ignoring')
     return index
-
 
 
 try:

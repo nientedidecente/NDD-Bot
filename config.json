@@ -2,12 +2,12 @@
     "bot":[
         {
             "branch":"ndd-specific-dev",
-            "version":"0.1.5",
+            "version":"0.1.6",
             "dev":true,
             "info":"**C  H  A  N  G  E  L  O  G**\n*version `{}` branch `{}`*\n\n- Added cogs support (More info here *||https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html||*)\n- Moved existing commands to cogs\n- Added `!changelog` command\n- Added `!debug` command\n- Re-added json support\n- Re-added `config.json` file\n- Added variable `bot_version_dev` in `config.json`",
             "prefix":"!",
             "prefix_dev":"!!",
-            "extensionsEnabled":true
+            "addonsEnabled":true
         }
     ],
 

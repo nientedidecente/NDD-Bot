@@ -1,10 +1,12 @@
 import json
+import discord
+import logging.config
 from discord.ext import commands
 
 with open('config.json') as config:
     json_data = json.load(config)
 
-
+logger = logging.getLogger(__name__)
 '''
 ------------------------------------------------
                 CONFIG VARIABLES
@@ -20,7 +22,7 @@ for i in json_data["bot"]:
     bot_version_info = i["info"]
 # ------------------------------------------------
 
-class Cog(commands.Cog):
+class c_CoolCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -29,3 +31,9 @@ class Cog(commands.Cog):
     @commands.command()
     async def changelog(self, ctx): 
         await ctx.send(bot_version_info.format(bot_version, bot_branch))
+
+def setup(bot):
+
+    bot.add_cog(c_CoolCog(bot))
+
+    logger.info('Cog loaded')
