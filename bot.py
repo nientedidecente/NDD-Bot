@@ -103,43 +103,6 @@ async def debug_error(ctx, error):
 
 
 
-
-'''
-------------------------------------------------
-                EVENTS
-------------------------------------------------
-'''
-
-
-
-def load_addons():
-
-    index = 0
-
-    if v.addonsEnabled == True:
-
-
-        for addon in import_all_addons(v.addons_dir):
-            logger.debug(f'Loading addon {addon}')
-
-            try:
-                client.load_extension('{}'.format(addon))
-
-
-            except:
-                logger.error(f'Unable to load addon "{addon}". Check the logs for more info')
-                logger.debug(f'Error: {sys.exc_info()}')
-            
-
-            v.addons_list[index] = addon
-            index += 1
-
-
-    else:
-        logger.debug('Addons are disabled. Ignoring')
-    return index
-
-
 try:
     client.run(TOKEN)  # Start the bot
 except:
