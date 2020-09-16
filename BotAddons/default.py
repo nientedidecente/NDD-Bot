@@ -91,7 +91,7 @@ async def on_member_join(self, member): # when a user joins a guild do:
             logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
 
             await channel.send(f'{member.mention}{v.join_msg}') # Send the "chwelcome_msg" object value to the channel
-            await member.send(f'Benvenut* {member.mention}{v.welcome_dm}') # Send the "chwelcome_dm" object value to the user
+            await member.send(v.welcome_dm.format(member.mention)) # Send the "chwelcome_dm" object value to the user
             return
 
 
