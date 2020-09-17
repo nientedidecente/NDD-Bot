@@ -1,9 +1,9 @@
 {
     "bot":[
         {
-            "branch":"ndd-specific-dev",
+            "branch":"ndd-specific",
             "version":"0.2.0",
-            "dev":true,
+            "dev":false,
             "info":"**WIP**",
             "prefix":"!",
             "prefix_dev":"!!",
