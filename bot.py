@@ -14,6 +14,8 @@ import func.vars as v
 from func.load_addons import load_addons
 from func.import_addons import import_all_addons
 
+from webserver import keep_alive
+
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
 logger = logging.getLogger(__name__)
@@ -103,10 +105,13 @@ async def debug_error(ctx, error):
 
 
 
+
 try:
+    keep_alive() # Run webserver
     client.run(TOKEN)  # Start the bot
 except:
     logger.error(f'Fatal error: {sys.exc_info()[0]}')
     logger.log(f'Error: {sys.exc_info()}')
     logger.error('Bot is exiting...')
     raise
+
