@@ -1,13 +1,13 @@
 {
     "bot":[
         {
-            "branch":"repl.it",
-            "version":"0.1.2",
+            "branch":"ndd-specific",
+            "version":"0.2.0",
             "dev":false,
-            "info":"**C  H  A  N  G  E  L  O  G**\n*version `{}` branch `{}`*\n\n- Added cogs support (More info here *||https://discordpy.readthedocs.io/en/latest/ext/commands/cogs.html||*)\n- Moved existing commands to cogs\n- Added `!changelog` command\n- Added `!debug` command\n- Re-added json support\n- Re-added `config.json` file\n- Added variable `bot_version_dev` in `config.json`",
+            "info":"**WIP**",
             "prefix":"!",
             "prefix_dev":"!!",
-            "extensionsEnabled":true
+            "addonsEnabled":true
         }
     ],
 
@@ -15,7 +15,7 @@
         {
             "join&leave":[
                 {
-                    "dm_msg":", su NDD Games, la community italiana di sviluppatori di giochi open source.\n1. Scrivi due righe su di te sul channel <#709745996938084433>.\n2. Leggi il <#710950825182101635>\n\nBuona permanenza!\n\nQuando puoi:\nChiedi accesso alla org github ad uno dei mod (https://github.com/nientedidecente)\nCompila il modulo in <#711220093631332443>",
+                    "dm_msg":"Benvenut* {}, su NDD Games, la community italiana di sviluppatori di giochi open source.\n1. Scrivi due righe su di te sul channel <#709745996938084433>.\n2. Leggi il <#710950825182101635>\n\nBuona permanenza!\n\nQuando puoi:\nChiedi accesso alla org github ad uno dei mod (https://github.com/nientedidecente)\nCompila il modulo in <#711220093631332443>",
                     "ch_id":"709733538181808172",
                     "ch_name":"general",
                     "hello_msg":" \u00E8 entrato nel server! Dategli un caloroso benvenuto!",
@@ -26,8 +26,6 @@
         }
     ],
 
-
     "cake":"lie"
-
 
 }

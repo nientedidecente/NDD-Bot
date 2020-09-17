@@ -20,4 +20,3 @@ async def hello(ctx):
 def setup(bot): # Required for every extension. Executed at extension load
     bot.add_command(hello) # Add the command we defined
     logger.info('Hello extension loaded')
-
