@@ -1,7 +1,7 @@
 {
     "bot":[
         {
-            "branch":"ndd-specific",
+            "branch":"master",
             "version":"0.2.0",
             "dev":false,
             "info":"**WIP**",
