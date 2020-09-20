@@ -11,7 +11,7 @@
             "prefix_dev":"!!",
 
             "addonsEnabled":true,
-            "addons_dir":"BotAddons"
+            "addons_dir":"addons"
         }
     ],
 

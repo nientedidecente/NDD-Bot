@@ -49,3 +49,7 @@ for i in json_data["eventsVars"]:
 addons_list = [""] * 30 # please someone find a better way to do this
 
 # ------------------------------------------------
+
+
+def return_json():
+    return json_data

@@ -1,7 +1,7 @@
 # bot.py
-
 import os
 import sys
+
 import discord
 import json
 import logging.config
@@ -29,7 +29,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')  # get token
 
 prefix = config.bot_prefix
 
-if config.bot_version_dev == True:
+if config.bot_version_dev is True:
     logger.debug('Using bot in Developer Mode')
     prefix = config.bot_prefix_dev
 
@@ -43,10 +43,9 @@ client = commands.Bot(command_prefix=prefix)  # Command prefix
 
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
+
     logger.debug('Setting discord presence...')
-    await client.change_presence(activity=discord.Game(name=config.bot_presence.format(config.bot_version, config.bot_branch))) # Set presence
-
-
+    await client.change_presence(activity=discord.Game(name=config.bot_presence.format(config.bot_version, config.bot_branch)))
     logger.debug('Loading Addons...')
     addons_num = load_addons(client)
     logger.debug('------')
@@ -57,7 +56,7 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug(f'| Discord.py ver: {discord.__version__}')
     logger.debug(f'| Bot version: {config.bot_version}, {config.bot_branch}')
     logger.debug('------')
-    logger.info("Bot is ready")
+    logger.info("Bot logged in and")
 
 '''
 ------------------------------------------------
