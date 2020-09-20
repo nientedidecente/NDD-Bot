@@ -3,7 +3,7 @@
         {
             "branch":"ndd-specific",
             "version":"0.2.0",
-            "dev":true,
+            "dev":false,
             "info":"**WIP**",
             "playing_status":"Hello! I am the NDD Bot! version {}|{}",
 

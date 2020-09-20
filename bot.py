@@ -56,7 +56,7 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug(f'| Discord.py ver: {discord.__version__}')
     logger.debug(f'| Bot version: {config.bot_version}, {config.bot_branch}')
     logger.debug('------')
-    logger.info("Bot logged in and")
+    logger.info("Bot is ready")
 
 '''
 ------------------------------------------------
