@@ -1,7 +1,7 @@
 {
     "bot":[
         {
-            "branch":"ndd-specific",
+            "branch":"repl.it",
             "version":"0.2.0",
             "dev":false,
             "info":"**WIP**",
