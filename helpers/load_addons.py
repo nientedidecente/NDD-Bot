@@ -2,30 +2,32 @@ import os
 import sys
 import logging.config
 
-import func.vars as v
+import helpers.config as config
+from helpers.import_addons import import_all_addons
+
 
 logger = logging.getLogger(__name__) 
 
 
-def load_addons():
+def load_addons(bot):
 
     index = 0
 
-    if v.addonsEnabled == True:
+    if config.addonsEnabled == True:
 
 
-        for addon in v.import_all_ext.import_all_ext('BotExt', 'BotCogs'):
+        for addon in import_all_addons(config.addons_dir):
             logger.debug(f'Importing extension {addon}')
 
             try:
-                v.client.load_extension('{}'.format(addon))
+                bot.load_extension('{}'.format(addon))
 
             except:
                 logger.error(f'Unable to load addon "{addon}". Check the logs for more info')
                 logger.debug(f'Error: {sys.exc_info()}')
 
 
-            addons_list[index] = addon
+            config.addons_list[index] = addon
             index += 1
 
 
