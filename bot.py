@@ -10,9 +10,9 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from pathlib import Path
 
-import func.vars as v
-from func.load_addons import load_addons
-from func.import_addons import import_all_addons
+import helpers.config as config
+from helpers.load_addons import load_addons
+from helpers.import_addons import import_all_addons
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -27,13 +27,13 @@ load_dotenv()  # Load the .env file
 TOKEN = os.getenv('DISCORD_TOKEN')  # get token
 
 
-prefix = v.bot_prefix
+prefix = config.bot_prefix
 
-if v.bot_version_dev == True:
+if config.bot_version_dev == True:
     logger.debug('Using bot in Developer Mode')
-    prefix = v.bot_prefix_dev
+    prefix = config.bot_prefix_dev
 
-if v.bot_prefix == v.bot_prefix_dev:
+if config.bot_prefix == config.bot_prefix_dev:
     logger.warning('The Normal Mode command prefix is equal to the prefix for Developer Mode, please change it to another value')
 
 logger.debug(f'Setting command prefix to "{prefix}"')
@@ -44,18 +44,18 @@ client = commands.Bot(command_prefix=prefix)  # Command prefix
 @client.event
 async def on_ready():  # When the bot is connected to Discord do:
     logger.debug('Setting discord presence...')
-    await client.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {v.bot_branch}|{v.bot_version}')) # Set presence
+    await client.change_presence(activity=discord.Game(name=config.bot_presence.format(config.bot_version, config.bot_branch))) # Set presence
 
 
     logger.debug('Loading Addons...')
-    addons_num = load_addons()
+    addons_num = load_addons(client)
     logger.debug('------')
     logger.debug('| Logged in as')
     logger.debug(f'| {client.user.name}')
     logger.debug(f'| ID: {client.user.id}')
     logger.debug(f'| Total addons installed: {addons_num}')
     logger.debug(f'| Discord.py ver: {discord.__version__}')
-    logger.debug(f'| Bot version: {v.bot_version}, {v.bot_branch}')
+    logger.debug(f'| Bot version: {config.bot_version}, {config.bot_branch}')
     logger.debug('------')
     logger.info("Bot is ready")
 
@@ -69,16 +69,16 @@ async def on_ready():  # When the bot is connected to Discord do:
 @client.command()
 async def debug(ctx, arg):
 
-    if v.bot_version_dev == True:
+    if config.bot_version_dev == True:
         
             await ctx.send(f'Please check your DMs {ctx.author.display_name}!')
 
             # We send the debug message to the author DMs to prevent notification spam        
             await ctx.author.send('-----Debug start-----')
 
-            for i in v.json_data: 
+            for i in config.json_data: 
                 await ctx.author.send('|')
-                await ctx.author.send(f'{i}:        `{v.json_data[i]}`')
+                await ctx.author.send(f'{i}:        `{config.json_data[i]}`')
             
             await ctx.author.send('|')
             await ctx.author.send('-----Debug end-----')
@@ -106,7 +106,7 @@ async def debug_error(ctx, error):
 try:
     client.run(TOKEN)  # Start the bot
 except:
-    logger.error(f'Fatal error: {sys.exc_info()[0]}')
+    logger.critical(f'Fatal error: {sys.exc_info()[0]}')
     logger.log(f'Error: {sys.exc_info()}')
     logger.error('Bot is exiting...')
     raise

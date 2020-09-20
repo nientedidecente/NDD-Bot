@@ -3,7 +3,7 @@ import discord
 import logging.config
 from discord.ext import commands
 
-import func.vars as v
+import helpers.config as config
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class Default(commands.Cog):
     # !changelog command
     @commands.command()
     async def changelog(self, ctx): 
-        await ctx.send(v.bot_version_info.format(v.bot_version, v.bot_branch))
+        await ctx.send(config.bot_version_info.format(config.bot_version, config.bot_branch))
 
     # !ping command
     @commands.command()
@@ -39,7 +39,7 @@ class Default(commands.Cog):
 
         if args[0] == "reset":
             await ctx.send('Ok! Setting my playing status to: `default`')
-            await self.bot.change_presence(activity=discord.Game(name=f'Hello! I am the NDD Bot! version {v.bot_branch}|{v.bot_version}'))
+            await self.bot.change_presence(activity=discord.Game(name=config.bot_presence.format(config.bot_version, config.bot_branch)))
         else:
             await ctx.send(f'Ok! Im setting my playing status to: {" ".join(args)}')  # Send what the user just said
             await self.bot.change_presence(activity=discord.Game(name=" ".join(args)))
@@ -60,10 +60,10 @@ class Default(commands.Cog):
         embed.set_author(name="NDD Bot", icon_url="https://cdn.discordapp.com/avatars/711283853972602901/9bed0ea2ddbc0a42c149ba06a42913a4.png?size=128")
 
         embed.add_field(name="‎", value="‎", inline=False)
-        embed.add_field(name=":scroll: Bot Version", value=f"{v.bot_version}", inline=True)
+        embed.add_field(name=":scroll: Bot Version", value=f"{config.bot_version}", inline=True)
         embed.add_field(name="‎", value="‎", inline=True)
-        embed.add_field(name=":nut_and_bolt: Branch", value=f"{v.bot_branch}", inline=True)
-        embed.add_field(name=":tools: Dev Version", value=f"{v.bot_version_dev}", inline=True)
+        embed.add_field(name=":nut_and_bolt: Branch", value=f"{config.bot_branch}", inline=True)
+        embed.add_field(name=":tools: Dev Version", value=f"{config.bot_version_dev}", inline=True)
 
         await ctx.channel.send(embed=embed)
 
@@ -82,16 +82,16 @@ async def on_member_join(self, member): # when a user joins a guild do:
     logger.debug('on_member_join event triggered')
 
     for channel in member.guild.channels: #search the channel
-        logger.debug(f'- - - Searching the "{v.welcome_ch_name}" channel...- - - ')
-        logger.debug(f'ID is <{v.welcome_ch_id}>')
-        logger.debug(f'Is "{str(channel)}" id the same as "{v.welcome_ch_name} id" ? {str(channel.id) == v.welcome_ch_id}')
+        logger.debug(f'- - - Searching the "{config.welcome_ch_name}" channel...- - - ')
+        logger.debug(f'ID is <{config.welcome_ch_id}>')
+        logger.debug(f'Is "{str(channel)}" id the same as "{config.welcome_ch_name} id" ? {str(channel.id) == config.welcome_ch_id}')
 
-        if str(channel.id) == v.welcome_ch_id: #compare channels id
-            logger.debug(f'{v.welcome_ch_name} channel found.')
-            logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
+        if str(channel.id) == config.welcome_ch_id: #compare channels id
+            logger.debug(f'{config.welcome_ch_name} channel found.')
+            logger.debug(f'- - - Done. Sending to the channel "{config.welcome_ch_name}" the welcome messagge- - - ')
 
-            await channel.send(f'{member.mention}{v.join_msg}') # Send the "chwelcome_msg" object value to the channel
-            await member.send(v.welcome_dm.format(member.mention)) # Send the "chwelcome_dm" object value to the user
+            await channel.send(config.join_msg.format(member.mention)) # Send the "chwelcome_msg" object value to the channel
+            await member.send(config.welcome_dm.format(member.mention)) # Send the "chwelcome_dm" object value to the user
             return
 
 
@@ -102,15 +102,15 @@ async def on_member_remove(self, member): # when a user leaves a guild do:
     logger.debug('on_member_remove event triggered')
 
     for channel in member.guild.channels: #search the channel
-        logger.debug(f'- - - Searching the "{v.welcome_ch_name}" channel...- - - ')
-        logger.debug(f'ID is <{v.welcome_ch_id}>')
-        logger.debug(f'Is "{str(channel)}" id the same as "{v.welcome_ch_name} id" ? {str(channel.id) == v.welcome_ch_id}')
+        logger.debug(f'- - - Searching the "{config.welcome_ch_name}" channel...- - - ')
+        logger.debug(f'ID is <{config.welcome_ch_id}>')
+        logger.debug(f'Is "{str(channel)}" id the same as "{config.welcome_ch_name} id" ? {str(channel.id) == config.welcome_ch_id}')
 
-        if str(channel.id) == v.welcome_ch_id: #compare channels id
-            logger.debug(f'{v.welcome_ch_name} channel found.')
-            logger.debug(f'- - - Done. Sending to the channel "{v.welcome_ch_name}" the welcome messagge- - - ')
+        if str(channel.id) == config.welcome_ch_id: #compare channels id
+            logger.debug(f'{config.welcome_ch_name} channel found.')
+            logger.debug(f'- - - Done. Sending to the channel "{config.welcome_ch_name}" the welcome messagge- - - ')
 
-            await channel.send(f'{member.mention}{v.left_msg}') 
+            await channel.send(config.left_msg.format(member.mention)) 
             #await member.send(f'Benvenut* {member.mention}{welcome_dm}') # There is no DM left message
             return
 
