@@ -11,8 +11,8 @@ from discord.ext import commands
 from pathlib import Path
 
 import helpers.config as config
-from helpers.load_addons import load_addons
-from helpers.import_addons import import_all_addons
+from helpers.load_extensions import load_exts
+from helpers.import_extensions import import_all_exts
 
 # Initial Setup
 logging.config.fileConfig("{}/logging.ini".format(Path(__file__).parent.absolute()))
@@ -47,12 +47,12 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug('Setting discord presence...')
     await client.change_presence(activity=discord.Game(name=config.bot_presence.format(config.bot_version, config.bot_branch)))
     logger.debug('Loading Addons...')
-    addons_num = load_addons(client)
+    exts_num = load_exts(client)
     logger.debug('------')
     logger.debug('| Logged in as')
     logger.debug(f'| {client.user.name}')
     logger.debug(f'| ID: {client.user.id}')
-    logger.debug(f'| Total addons installed: {addons_num}')
+    logger.debug(f'| Total addons installed: {exts_num}')
     logger.debug(f'| Discord.py ver: {discord.__version__}')
     logger.debug(f'| Bot version: {config.bot_version}, {config.bot_branch}')
     logger.debug('------')
@@ -94,7 +94,7 @@ async def debug_error(ctx, error):
         embed.set_author(name="Please select an option")
 
         embed.add_field(name="‎", value="‎", inline=False)
-        embed.add_field(name="!debug event [name_of_event]", value="Invoke an event", inline=True)
+        embed.add_field(name="WIP !debug event [name_of_event]", value="Invoke an event", inline=True)
         embed.add_field(name="!debug var", value="Print all the variables", inline=True)
 
         await ctx.channel.send(embed=embed)

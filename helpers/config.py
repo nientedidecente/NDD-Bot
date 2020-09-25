@@ -25,8 +25,8 @@ for i in json_data["bot"]:
     bot_prefix = i["prefix"]
     bot_prefix_dev = i["prefix_dev"]
 
-    addonsEnabled = i["addonsEnabled"]
-    addons_dir = i["addons_dir"]
+    extensionsEnabled = i["extensionsEnabled"]
+    exts_dir = i["exts_dir"]
 
     bot_presence = i["playing_status"]
 
@@ -46,7 +46,7 @@ for i in json_data["eventsVars"]:
 # ------------|  Extensions variables |-----
 
 
-addons_list = [""] * 30 # please someone find a better way to do this
+exts_list = [""] * 30 # please someone find a better way to do this
 
 # ------------------------------------------------
 

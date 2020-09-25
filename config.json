@@ -3,15 +3,15 @@
         {
             "branch":"master",
             "version":"0.2.0",
-            "dev":false,
+            "dev":true,
             "info":"**WIP**",
             "playing_status":"Hello! I am the NDD Bot! version {}|{}",
 
             "prefix":"!",
             "prefix_dev":"!!",
 
-            "addonsEnabled":true,
-            "addons_dir":"addons"
+            "extensionsEnabled":true,
+            "exts_dir":"extensions"
         }
     ],
 
