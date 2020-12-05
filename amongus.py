@@ -22,12 +22,14 @@ class AmongUs(commands.Cog):
 
 
     @commands.command()
-    async def start(self, ctx):
+    async def start(self, ctx, dude1, dude2):
         guild = ctx.message.guild
+        role = discord.utils.get(ctx.guild.roles, name="AmongUs")
 
-        category = await guild.create_category('This is a Test')
-        logger.info('Created category channel')
-
+        name = 'Among Us'
+        category = discord.utils.get(ctx.guild.categories, name=name)
+        
+        await ctx.send(f'{dude1} aaa {dude2}')
         channel = await guild.create_text_channel('this-is-a-test', category=category)
         logger.info('Created text channel')
 
