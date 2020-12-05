@@ -54,7 +54,7 @@ async def on_ready():  # When the bot is connected to Discord do:
     logger.debug(f'| ID: {client.user.id}')
     logger.debug(f'| Total addons installed: {exts_num}')
     logger.debug(f'| Discord.py ver: {discord.__version__}')
-    logger.debug(f'| Bot version: {config.bot_version}, {config.bot_branch}')
+    logger.debug(f'| Bot version: {config.bot_version}, {config.bot_branch}') # TODO: Replace the hardcoded bot_branch string with something else
     logger.debug('------')
     logger.info("Bot is ready")
 
