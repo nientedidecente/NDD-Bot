@@ -6,7 +6,7 @@ import logging.config
 logger = logging.getLogger(__name__) 
 
 # Part of the code from: https://stackoverflow.com/questions/14426574/how-to-import-members-of-all-modules-within-a-package/14428820#14428820
-def import_all_addons(dirname):
+def import_all_exts(dirname):
     global __all__
     __all__ = []
     logger.debug('--Import log START--')
